@@ -21,7 +21,7 @@ check()
 
 By default, `checkenv` will print a pretty error message and call `sys.exit()` if any required variables are missing. It will also print an error message if optional variables are missing, but will not exit the process.
 
-![Screenshot](docs/usage.png)
+![Screenshot](https://github.com/kylecaston/checkenv/raw/master/docs/usage.png)
 
 ## Configuration
 Your JSON file should define the environmental variables as keys, and either a boolean (required) as the value, or a configuration object with any of the options below.
