@@ -1,0 +1,13 @@
+{
+    "VALUE1_NOT_SET": {
+        "description": "value1notset description"
+    },
+    "VALUE2_NOT_SET_WITH_DEFAULT": {
+        "description": "value2notsetwithdefault description",
+        "default": 3000
+    },
+    "VALUE3_NOT_SET_NOT_REQUIRED": {
+        "required": false
+    }
+  }
+  

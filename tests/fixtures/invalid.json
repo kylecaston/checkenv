@@ -1,0 +1,8 @@
+{
+    "123TEST": {
+        "description": "cannot start with number"
+    },
+    "  INVALID_NAME": {
+        "description": "cannot have spaces"
+    }
+}
