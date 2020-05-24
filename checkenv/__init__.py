@@ -300,8 +300,3 @@ def check(filename: str = 'env.json'):
     except FileNotFoundError:
         print(f'Unable to find checkenv configuration file "{filename}" - exiting')
         sys.exit()
-
-
-if __name__ == "__main__":
-    check(filename='__env.json')
-
