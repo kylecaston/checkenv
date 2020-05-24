@@ -196,8 +196,8 @@ class CheckEnv:
     def load_spec_file(self) -> None:
         """Loads the env var spec file, verifies it adheres to JSON schema
 
-        Raises os.ValidationError if the input env.json file is malformed.
-        Raises IOError if the spec file cannot be found.
+        Raises jsonschema.exceptions.ValidationError if input env.json file is malformed.
+        Raises FileNotFoundError if the spec file cannot be found.
         """
         with open(self._env_filename) as jsonfile:
             jdata = json.load(jsonfile)
@@ -297,7 +297,7 @@ def check(filename: str = 'env.json'):
     except ValidationError as validation_error:
         print(validation_error.message)
         sys.exit()
-    except IOError:
+    except FileNotFoundError:
         print(f'Unable to find checkenv configuration file "{filename}" - exiting')
         sys.exit()
 

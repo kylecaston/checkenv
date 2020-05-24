@@ -1,8 +1,8 @@
+import pytest
 from checkenv import CheckEnv
 
-def test_basic():
-    instance = CheckEnv()
-    instance.load_spec_file()
-    print(instance)
+def test_no_config_file():
+    with pytest.raises(FileNotFoundError):
+        instance = CheckEnv()
+        instance.load_spec_file()
 
-    assert isinstance(instance, CheckEnv)
