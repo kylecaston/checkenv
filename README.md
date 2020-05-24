@@ -4,6 +4,7 @@
 [![CircleCI](https://circleci.com/gh/kylecaston/checkenv.svg?style=shield)](https://circleci.com/gh/kylecaston/checkenv)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/checkenv?style=flat-square)](https://pypistats.org/packages/checkenv)
 [![PyPI - License](https://img.shields.io/pypi/l/checkenv?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Coverage Status](https://coveralls.io/repos/github/kylecaston/checkenv/badge.svg?branch=master)](https://coveralls.io/github/kylecaston/checkenv?branch=master)
 
 A modern best-practice is to [store your application's configuration in environmental variables](http://12factor.net/config).  This allows you to keep all config data outside of your repository, and store it in a standard, system-agnostic location.  Modern build/deploy/development tools make it easier to manage these variables per-host, but they're still often undocumented, and can lead to bugs when missing.
 

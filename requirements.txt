@@ -1,2 +1,5 @@
 jsonschema
 colorama
+pytest
+tox
+coveralls

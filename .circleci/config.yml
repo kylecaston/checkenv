@@ -8,11 +8,18 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
+      #- python/load-cache
       - python/install-deps
-      - python/save-cache
+      #- python/save-cache
+      - run:
+          name: Run tests and coverage
+          command: tox
+      - run:
+          name: Update coverage
+          command: COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
 
 workflows:
   main:
     jobs:
-      - build-and-test
+      - build-and-test:
+          context: checkenv
