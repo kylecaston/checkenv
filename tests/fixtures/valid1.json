@@ -1,0 +1,16 @@
+{
+    "VALUE1": {
+      "description": "This defines the current environment (dev, stage, prod)"
+    },
+    "VALUE2": {
+      "description": "This is the port the API server will run on",
+      "default": 3000
+    },
+    "VALUE3": true,
+    "VALUE4": {
+      "required": false,
+      "description": "If set, enables additional debug messages"
+    },
+    "VALUE5": false
+  }
+  

@@ -213,7 +213,7 @@ class CheckEnv:
         variable as optional.
         """
         # see if name is defined
-        value = os.environ.get(name)
+        value = os.getenv(name, None)
         if not value:
             if default: # if we have a default value, set as a str and continue
                 os.environ[name] = str(default)
@@ -302,7 +302,6 @@ def check(filename: str = 'env.json'):
         sys.exit()
 
 
-# if __name__ == "__main__":
-#     check()
-#     print('asdfasdfa')
-#     print('asdfdasdfasdfasdfasdf')
+if __name__ == "__main__":
+    check(filename='__env.json')
+
