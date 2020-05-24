@@ -300,3 +300,9 @@ def check(filename: str = 'env.json'):
     except IOError:
         print(f'Unable to find checkenv configuration file "{filename}" - exiting')
         sys.exit()
+
+
+# if __name__ == "__main__":
+#     check()
+#     print('asdfasdfa')
+#     print('asdfdasdfasdfasdfasdf')

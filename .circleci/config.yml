@@ -11,6 +11,12 @@ jobs:
       - python/load-cache
       - python/install-deps
       - python/save-cache
+      - run:
+          name: Run tests and coverage
+          command: tox
+      - run:
+          name: Update coverage
+          command: COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
 
 workflows:
   main:
