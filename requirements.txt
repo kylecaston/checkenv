@@ -2,4 +2,4 @@ jsonschema
 colorama
 pytest
 tox
-python-coveralls
+coveralls
