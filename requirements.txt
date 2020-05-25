@@ -3,3 +3,4 @@ colorama
 pytest
 tox
 coveralls
+future

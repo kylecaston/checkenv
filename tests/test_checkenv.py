@@ -6,7 +6,7 @@ from checkenv import CheckEnv, EnvCheckResults, EnvCheckResultRow
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
 def test_no_config_file():
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(IOError):
         instance = CheckEnv()
         instance.load_spec_file()
 

@@ -15,12 +15,13 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'jsonschema',
-        'colorama'
+        'colorama',
+        'future'
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4',
 )
