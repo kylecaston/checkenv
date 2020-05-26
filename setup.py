@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="checkenv",
-    version="1.0.0",
+    version="1.1.0",
     author="Kyle Caston",
     author_email="kyle@caston.dev",
     description="Ensures specified environment variables are present during runtime",
@@ -15,12 +15,18 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'jsonschema',
-        'colorama'
+        'colorama',
+        'future'
     ],
     classifiers=[
+        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4',
 )

@@ -3,13 +3,20 @@ version: 2.1
 orbs:
   python: circleci/python@0.2.1
 
+executors:
+  python-multiple:
+    docker:
+      - image: fkrull/multi-python
+
 jobs:
   build-and-test:
-    executor: python/default
+    executor: python-multiple
     steps:
       - checkout
       #- python/load-cache
-      - python/install-deps
+      - run:
+          name: Install dependencies
+          command: pip3 install -r requirements.txt
       #- python/save-cache
       - run:
           name: Run tests and coverage

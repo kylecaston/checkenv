@@ -1,6 +1,7 @@
 # checkenv
 
 [![PyPI](https://img.shields.io/pypi/v/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
+[![Python versions](https://img.shields.io/pypi/pyversions/checkenv)](https://img.shields.io/pypi/pyversions/checkenv)
 [![CircleCI](https://circleci.com/gh/kylecaston/checkenv.svg?style=shield)](https://circleci.com/gh/kylecaston/checkenv)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/checkenv?style=flat-square)](https://pypistats.org/packages/checkenv)
 [![PyPI - License](https://img.shields.io/pypi/l/checkenv?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -56,5 +57,12 @@ Your JSON file should define the environmental variables as keys, and either a b
 * `default` - Defines the default value to use if variable is unset. Implicitly sets `required` to `false` regardless of any specified value.
 
 ## Change Log
+### 1.1.0
+* Expanded supported Python interpreter versions - `checkenv` now supports Python versions 2.7, 3.5, 3.6, 3.7, and 3.8.
+* Refactored the code with classes - although this does not add additional functionality, the code is cleaner, easier to understand, and better documented for future improvements
+* Added tests with `pytest` and `tox`
+* Every pushed branch undergoes automated testing with CircleCI 
+* Started tracking code coverage percentage and currently hovering around ~50% (to be improved)
+
 ### 1.0.0
 * Initial release
