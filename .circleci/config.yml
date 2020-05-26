@@ -14,7 +14,9 @@ jobs:
     steps:
       - checkout
       #- python/load-cache
-      - pip3 install -r requirements.txt
+      - run:
+          name: Install dependencies
+          command: pip3 install -r requirements.txt
       #- python/save-cache
       - run:
           name: Run tests and coverage
