@@ -1,0 +1,6 @@
+{
+    "OPTIONAL_1": false,
+    "OPTIONAL_2": {
+        "required": false
+    }
+}
