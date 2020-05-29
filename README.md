@@ -30,6 +30,8 @@ By default, `checkenv` will print a pretty error message and call `sys.exit()` i
 
 ![Screenshot](https://raw.githubusercontent.com/kylecaston/checkenv/master/docs/usage.png)
 
+You can specify a filename other than `env.json` by setting the optional parameter `filename`.  The library will attempt to load this file from the root path of your project.  You can also specify an absolute file path.
+
 If you would like to handle errors yourself, `check` takes an optional `raise_exception` argument which causes it to raise exceptions instead of exiting the process.  
 
 ```python
@@ -77,6 +79,7 @@ Your JSON file should define the environmental variables as keys, and either a b
 ### 1.2.0
 * Added ability for `check()` to throw exceptions instead of killing the running process with `raise_exception=True`
 * Added ability to silence all output to `stdout` with `no_output=True`
+* Updated documentation with the `filename` parameter feature that allows you to specify an input JSON file with a different name than `env.json`
 * Updated README.md with usage instructions for these new features
 * Increased code coverage to 95%+
 
