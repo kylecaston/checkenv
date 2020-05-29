@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="checkenv",
-    version="1.1.0",
+    version="1.2.0",
     author="Kyle Caston",
     author_email="kyle@caston.dev",
     description="Ensures specified environment variables are present during runtime",
