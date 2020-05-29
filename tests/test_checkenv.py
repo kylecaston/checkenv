@@ -25,12 +25,37 @@ def test_main_import_different_filename_doesnt_exist_sys_exit(init_env):
         check()
     assert exc.type == SystemExit
 
+def test_main_import_different_filename_doesnt_exist_raise_error(init_env):
+    with pytest.raises(IOError) as exc:
+        check(raise_exception=True)
+
 def test_main_import_invalid_json_sys_exit(init_env):
     with pytest.raises(SystemExit) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/invalid.json'))
     assert exc.type == SystemExit
 
-def test_main_import_valid_json_checkenv_succeeds_and_continues(init_env, monkeypatch):
+def test_main_import_invalid_json_raise_exception(init_env):
+    with pytest.raises(ValidationError) as exc:
+        check(filename=os.path.join(dir_path, 'fixtures/invalid.json'), raise_exception=True)
+    assert exc.type == ValidationError
+
+def test_main_import_invalid_json_raise_exception_no_output(init_env, capsys):
+    with pytest.raises(ValidationError) as exc:
+        check(filename=os.path.join(dir_path, 'fixtures/invalid.json'), raise_exception=True, no_output=True)
+    assert exc.type == ValidationError
+    captured = capsys.readouterr()
+    assert captured.out == ''
+    assert captured.err == ''
+
+def test_main_import_invalid_json_raise_exception_with_output(init_env, capsys):
+    with pytest.raises(ValidationError) as exc:
+        check(filename=os.path.join(dir_path, 'fixtures/invalid.json'), raise_exception=True, no_output=False)
+    assert exc.type == ValidationError
+    captured = capsys.readouterr()
+    assert captured.out != ''   # should be some error message output
+    assert captured.err == ''   # nothing gets sent to stderr
+
+def test_main_import_valid_json_checkenv_succeeds_and_continues(init_env):
     check(filename=os.path.join(dir_path, 'fixtures/valid_no_mandatory.json'))
 
 def test_main_import_valid_json_checkenv_fails_and_exits(init_env):
@@ -49,6 +74,12 @@ def test_main_import_raise_exception_on_error_details(init_env):
     except CheckEnvException as cee:
         assert cee.missing == ['VALUE1_NOT_SET']
         assert set(cee.optional) == set(['VALUE3_NOT_SET_NOT_REQUIRED', 'VALUE2_NOT_SET_WITH_DEFAULT'])
+
+def test_main_import_valid_json_checkenv_succeeds_and_continues_no_output(init_env, capsys):
+    check(filename=os.path.join(dir_path, 'fixtures/valid_no_mandatory.json'), no_output=True)
+    captured = capsys.readouterr()
+    assert captured.out == ''
+    assert captured.err == ''
 
 def test_no_config_file(init_env):
     with pytest.raises(IOError):

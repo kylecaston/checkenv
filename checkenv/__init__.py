@@ -300,7 +300,11 @@ def _handle_exit(raise_exc=False, exc=None):
     else:
         raise exc
 
-def check(filename='env.json', raise_exception=False):
+def _handle_print(no_out=False, msg=""):
+    if not no_out:
+        print(msg)
+
+def check(filename='env.json', raise_exception=False, no_output=False):
     """Executes the end-to-end flow for checking environment variables against the spec.
 
     For most out-of-the-box applications, this is the only method you need to call.
@@ -309,23 +313,27 @@ def check(filename='env.json', raise_exception=False):
     :type filename: str, optional
     :param raise_exception: If the validation fails, raise an Exception instead of exiting the process
     :type raise_exception: bool, optional
+    :param no_output: Do not write anything to stdout
+    :type no_output: bool, optional
     """
     # handle two exception cases above
     try:
         env = CheckEnv(env_filename=filename)
         env.load_spec_file()
         env.apply_spec()
-        env.print_results(env.missing, EnvCheckResults.MISSING)
-        env.print_results(env.optional, EnvCheckResults.OPTIONAL)
+        if not no_output:
+            env.print_results(env.missing, EnvCheckResults.MISSING)
+            env.print_results(env.optional, EnvCheckResults.OPTIONAL)
         if env.check_failed:
             if raise_exception:
                 raise CheckEnvException(env.missing, env.optional)
             _handle_exit(raise_exc=raise_exception)
     except ValidationError as validation_error:
-        print(validation_error.message)
+        _handle_print(no_out=no_output, msg=validation_error.message)
         _handle_exit(raise_exc=raise_exception, exc=validation_error)
     except IOError as ioe:
-        print('Unable to find checkenv configuration file "{}" - exiting'.format(os.path.abspath(filename)))
+        _handle_print(no_out=no_output, msg='Unable to find checkenv configuration file "{}" - exiting'
+                      .format(os.path.abspath(filename)))
         _handle_exit(raise_exc=raise_exception, exc=ioe)
     except CheckEnvException as cee:
         raise cee   # rethrow exception for caller

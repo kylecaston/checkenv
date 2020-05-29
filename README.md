@@ -30,6 +30,23 @@ By default, `checkenv` will print a pretty error message and call `sys.exit()` i
 
 ![Screenshot](https://raw.githubusercontent.com/kylecaston/checkenv/master/docs/usage.png)
 
+If you would like to handle errors yourself, `check` takes an optional `raise_exception` argument which causes it to raise exceptions instead of exiting the process.  
+
+```python
+from checkenv import check
+try:
+  check(raise_exception=True)
+except Exception as e:
+  # do something with the error 'e' because the process will not exit
+```
+
+An exception can be one of three classes of Exceptions:
+* `checkenv.exceptions.CheckEnvException` - thrown if any mandatory environment variables are missing; contains `missing` and `optional` properties that contain a list of environment variable names
+* `jsonschema.exceptions import ValidationError` - thrown if the input JSON files is invalid
+* `IOError` - thrown if the input JSON file cannot be found
+
+You can also silence any output to `stdout` by setting the optional parameter `no_output=True`.  It is recommended to use this in conjunction with `raise_exception=True` and handling the error yourself; otherwise, your application can fail silently because you do not realize that something is wrong with your environment variables.
+
 ## Configuration
 Your JSON file should define the environmental variables as keys, and either a boolean (required) as the value, or a configuration object with any of the options below.
 
@@ -57,6 +74,12 @@ Your JSON file should define the environmental variables as keys, and either a b
 * `default` - Defines the default value to use if variable is unset. Implicitly sets `required` to `false` regardless of any specified value.
 
 ## Change Log
+### 1.2.0
+* Added ability for `check()` to throw exceptions instead of killing the running process with `raise_exception=True`
+* Added ability to silence all output to `stdout` with `no_output=True`
+* Updated README.md with usage instructions for these new features
+* Increased code coverage to 95%+
+
 ### 1.1.0
 * Expanded supported Python interpreter versions - `checkenv` now supports Python versions 2.7, 3.5, 3.6, 3.7, and 3.8.
 * Refactored the code with classes - although this does not add additional functionality, the code is cleaner, easier to understand, and better documented for future improvements
