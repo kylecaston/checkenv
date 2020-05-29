@@ -8,6 +8,7 @@ from builtins import object
 import os
 import sys
 import json
+from checkenv.exceptions import CheckEnvException
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
 from colorama import init, Fore, Back, Style
@@ -199,12 +200,19 @@ class CheckEnv(object):
         self._env_filename = env_filename
 
 
+    def _reset(self):
+        """Resets missing and optional lists"""
+        self._missing = []
+        self._optional = []
+
+
     def load_spec_file(self):
         """Loads the env var spec file, verifies it adheres to JSON schema
 
         Raises jsonschema.exceptions.ValidationError if input env.json file is malformed.
         Raises FileNotFoundError if the spec file cannot be found.
         """
+        self._reset()
         with open(self._env_filename) as jsonfile:
             jdata = json.load(jsonfile)
             validate(jdata, self._schema)
@@ -286,23 +294,46 @@ class CheckEnv(object):
         results.print_console_color()
 
 
-def check(filename='env.json'):
+def _handle_exit(raise_exc=False, exc=None):
+    if not raise_exc:
+        sys.exit()
+    else:
+        raise exc
+
+def _handle_print(no_out=False, msg=""):
+    if not no_out:
+        print(msg)
+
+def check(filename='env.json', raise_exception=False, no_output=False):
     """Executes the end-to-end flow for checking environment variables against the spec.
 
     For most out-of-the-box applications, this is the only method you need to call.
+
+    :param filename: The name of the environment configuration file (default, env.json)
+    :type filename: str, optional
+    :param raise_exception: If the validation fails, raise an Exception instead of exiting the process
+    :type raise_exception: bool, optional
+    :param no_output: Do not write anything to stdout
+    :type no_output: bool, optional
     """
     # handle two exception cases above
     try:
         env = CheckEnv(env_filename=filename)
         env.load_spec_file()
         env.apply_spec()
-        env.print_results(env.missing, EnvCheckResults.MISSING)
-        env.print_results(env.optional, EnvCheckResults.OPTIONAL)
+        if not no_output:
+            env.print_results(env.missing, EnvCheckResults.MISSING)
+            env.print_results(env.optional, EnvCheckResults.OPTIONAL)
         if env.check_failed:
-            sys.exit()
+            if raise_exception:
+                raise CheckEnvException(env.missing, env.optional)
+            _handle_exit(raise_exc=raise_exception)
     except ValidationError as validation_error:
-        print(validation_error.message)
-        sys.exit()
-    except IOError:
-        print('Unable to find checkenv configuration file "{}" - exiting'.format(filename))
-        sys.exit()
+        _handle_print(no_out=no_output, msg=validation_error.message)
+        _handle_exit(raise_exc=raise_exception, exc=validation_error)
+    except IOError as ioe:
+        _handle_print(no_out=no_output, msg='Unable to find checkenv configuration file "{}" - exiting'
+                      .format(os.path.abspath(filename)))
+        _handle_exit(raise_exc=raise_exception, exc=ioe)
+    except CheckEnvException as cee:
+        raise cee   # rethrow exception for caller
