@@ -1,7 +1,9 @@
+"""Exception class for reporting back missing and optional values"""
 from future import standard_library
 standard_library.install_aliases()
 
 class CheckEnvException(Exception):
+    """my class here"""
     _missing = []
     _optional = []
 
@@ -11,6 +13,7 @@ class CheckEnvException(Exception):
 
     @property
     def missing(self):
+        """Pretty obvious, it's the missing values"""
         return self._missing
 
     @property

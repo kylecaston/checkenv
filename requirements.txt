@@ -1,6 +1,10 @@
 jsonschema
 colorama
+future
+
 pytest
 tox
 coveralls
-future
+sphinx
+sphinx_rtd_theme
+recommonmark
