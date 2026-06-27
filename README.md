@@ -47,7 +47,7 @@ except Exception as e:
 An exception can be one of three classes of Exceptions:
 * `checkenv.exceptions.CheckEnvException` - thrown if any mandatory environment variables are missing; contains `missing` and `optional` properties that contain a list of environment variable names
 * `jsonschema.exceptions import ValidationError` - thrown if the input JSON files is invalid
-* `IOError` - thrown if the input JSON file cannot be found
+* `OSError` - thrown if the input JSON file cannot be found
 
 You can also silence any output to `stdout` by setting the optional parameter `no_output=True`.  It is recommended to use this in conjunction with `raise_exception=True` and handling the error yourself; otherwise, your application can fail silently because you do not realize that something is wrong with your environment variables.
 
@@ -82,6 +82,9 @@ Your JSON file should define the environmental variables as keys, and either a b
 * Dropped support for Python 2.7 and end-of-life Python 3 versions; `checkenv` now requires Python 3.11+
 * Moved packaging metadata to `pyproject.toml`
 * Removed the `future` compatibility dependency
+* Added inline type metadata for type-aware editors and downstream users
+* Added Ruff linting/formatting gates, package build validation, and a supported Python version matrix in CircleCI
+* Added Dependabot configuration and security reporting policy
 * Fixed failed checks to exit with a nonzero status code
 * Fixed default handling for falsy values such as `0` and `false`
 * Treat explicitly empty environment variables as set

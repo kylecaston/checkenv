@@ -6,27 +6,45 @@ labels: bug
 assignees: ''
 
 ---
-**PLEASE COMPLETE ALL OF THIS SECTION**
+**Environment**
 
-**System:**
- - macOS version: [e.g. 10.15.3 - see Apple menu > About This Mac]
- - Camera manufacturer and model [e.g. Canon EOS 7D]
- - Camera Live version [e.g. 11]
+- Python version:
+- checkenv version:
+- Operating system:
+- Install method: [pip, uv, poetry, etc.]
 
 **Describe the bug**
+
 A clear and concise description of what the bug is.
 
 **To Reproduce**
+
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
+
+1. Create this `env.json`:
+
+```json
+{}
+```
+
+2. Run this Python code:
+
+```python
+from checkenv import check
+
+check()
+```
+
 3. See error
 
 **Expected behavior**
+
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+**Actual behavior**
+
+Paste the traceback, terminal output, or process exit behavior you saw.
 
 **Additional context**
+
 Add any other context about the problem here.
