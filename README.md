@@ -103,6 +103,7 @@ Maintenance and security:
 * Moved packaging metadata to `pyproject.toml`
 * Added inline type metadata for type-aware editors and downstream users
 * Added Ruff linting/formatting gates, package build validation, and a supported Python version matrix in CircleCI
+* Raised package test coverage to 100% and added a coverage floor to prevent regressions
 * Added Dependabot configuration and security reporting policy
 * Constrained Snyk-reported vulnerable transitive development dependencies above fixed versions
 * Added automated PyPI publishing from tagged CircleCI builds

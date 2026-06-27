@@ -4,7 +4,7 @@ import os
 import pytest
 from jsonschema.exceptions import ValidationError
 
-from checkenv import CheckEnv, EnvCheckResultRow, EnvCheckResults, check
+from checkenv import CheckEnv, EnvCheckResultRow, EnvCheckResults, _handle_exit, check
 from checkenv.exceptions import CheckEnvException
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -130,6 +130,13 @@ def test_valid_config_loads():
     instance.load_spec_file()
 
 
+def test_apply_spec_before_load_raises_runtime_error():
+    instance = CheckEnv()
+
+    with pytest.raises(RuntimeError, match="Cannot apply checkenv spec before loading"):
+        instance.apply_spec()
+
+
 def test_all_env_names_set_valid1(init_env, monkeypatch):
     monkeypatch.setenv("VALUE1", "value1")
     monkeypatch.setenv("VALUE2", "value2")
@@ -233,6 +240,26 @@ def test_plural_string_length_two():
     assert result == "s are"
 
 
+def test_envcheckresults_repr():
+    results = EnvCheckResults(
+        ["VALUE_1", "VALUE_2"],
+        {
+            "VALUE_1": True,
+            "VALUE_2": {
+                "default": "default-value",
+                "description": "example description",
+            },
+        },
+        EnvCheckResults.MISSING,
+    )
+
+    assert str(results) == (
+        "The following 2 environment variables are required\n"
+        "VALUE_1\n"
+        "VALUE_2 (default=default-value) example description"
+    )
+
+
 def test_envcheckresultrow_constructor():
     env_name = "FIELD_1"
     default = "DEFAULT_1"
@@ -269,3 +296,8 @@ def test_envcheckresultrow_repr_default_desc():
     description = "DESCRIPTION_1"
     instance = EnvCheckResultRow(env_name, default=default, description=description)
     assert str(instance) == "FIELD_1 (default=DEFAULT_1) DESCRIPTION_1"
+
+
+def test_handle_exit_raise_exception_without_exception():
+    with pytest.raises(RuntimeError, match="checkenv exited without an exception"):
+        _handle_exit(raise_exc=True)
