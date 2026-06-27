@@ -1,9 +1,12 @@
 version: 2.1
 
 executors:
-  python-313:
+  python:
+    parameters:
+      version:
+        type: string
     docker:
-      - image: cimg/python:3.13
+      - image: cimg/python:<< parameters.version >>
 
 commands:
   checkout-public-repo:
@@ -23,23 +26,52 @@ commands:
 
 jobs:
   build-and-test:
-    executor: python-313
+    parameters:
+      version:
+        type: string
+    executor:
+      name: python
+      version: << parameters.version >>
     steps:
       - checkout-public-repo
       - run:
           name: Install dependencies
           command: |
             python -m pip install --upgrade pip setuptools wheel
-            python -m pip install -r requirements.txt pytest-cov
+            python -m pip install -r requirements.txt
+      - run:
+          name: Run Ruff lint
+          command: python -m ruff check .
+      - run:
+          name: Check formatting
+          command: python -m ruff format --check .
       - run:
           name: Run tests and coverage
           command: python -m pytest --cov=checkenv --cov-report=term-missing -vv
       - run:
+          name: Build distributions
+          command: python -m build
+      - run:
+          name: Validate distributions
+          command: python -m twine check dist/*
+      - run:
           name: Update coverage
-          command: coveralls
+          command: |
+            if [ "<< parameters.version >>" = "3.13" ]; then
+              coveralls
+            else
+              echo "Skipping Coveralls upload for Python << parameters.version >>"
+            fi
+      - store_artifacts:
+          path: dist
 
   publish-to-pypi:
-    executor: python-313
+    parameters:
+      version:
+        type: string
+    executor:
+      name: python
+      version: << parameters.version >>
     environment:
       TWINE_USERNAME: __token__
       TWINE_NON_INTERACTIVE: "1"
@@ -65,13 +97,20 @@ workflows:
     jobs:
       - build-and-test:
           context: checkenv
+          matrix:
+            parameters:
+              version: ["3.11", "3.12", "3.13", "3.14"]
           filters:
             tags:
               only: /.*/
       - publish-to-pypi:
           context: checkenv
+          version: "3.13"
           requires:
-            - build-and-test
+            - build-and-test-3.11
+            - build-and-test-3.12
+            - build-and-test-3.13
+            - build-and-test-3.14
           filters:
             tags:
               only: /^v[0-9]+(\.[0-9]+){2}.*$/

@@ -1,3 +1,72 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77.0.3", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "checkenv"
+version = "2.0.0"
+description = "Ensures specified environment variables are present during runtime"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE.md"]
+authors = [
+    { name = "Kyle Caston", email = "kyle@caston.dev" },
+]
+keywords = ["configuration", "environment", "environment-variables", "settings"]
+dependencies = [
+    "colorama>=0.4.6",
+    "jsonschema>=4.18",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/kylecaston/checkenv"
+Issues = "https://github.com/kylecaston/checkenv/issues"
+Repository = "https://github.com/kylecaston/checkenv"
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.3",
+    "coveralls>=4.0",
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
+    # Keep transitive dev dependencies above Snyk-reported vulnerable ranges.
+    "requests>=2.32.4",
+    "ruff>=0.8",
+    "tox>=4.0",
+    "twine>=6.0",
+    "urllib3>=2.6.3",
+    "zipp>=3.19.1",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "SIM", "UP"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+addopts = ["--strict-config", "--strict-markers"]
+testpaths = ["tests"]
+
+[tool.setuptools.packages.find]
+include = ["checkenv*"]
+
+[tool.setuptools.package-data]
+checkenv = ["py.typed"]
