@@ -5,11 +5,27 @@ executors:
     docker:
       - image: cimg/python:3.13
 
+commands:
+  checkout-public-repo:
+    steps:
+      - run:
+          name: Checkout code
+          command: |
+            set -eu
+            git init .
+            git remote add origin https://github.com/kylecaston/checkenv.git
+            if [ -n "${CIRCLE_TAG:-}" ]; then
+              git fetch --depth=1 origin "refs/tags/${CIRCLE_TAG}"
+            else
+              git fetch --depth=1 origin "refs/heads/${CIRCLE_BRANCH}"
+            fi
+            git checkout --detach FETCH_HEAD
+
 jobs:
   build-and-test:
     executor: python-313
     steps:
-      - checkout
+      - checkout-public-repo
       - run:
           name: Install dependencies
           command: |
@@ -28,7 +44,7 @@ jobs:
       TWINE_USERNAME: __token__
       TWINE_NON_INTERACTIVE: "1"
     steps:
-      - checkout
+      - checkout-public-repo
       - run:
           name: Install packaging tools
           command: python -m pip install --upgrade pip build twine
