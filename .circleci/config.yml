@@ -1,32 +1,79 @@
 version: 2.1
 
-orbs:
-  python: circleci/python@0.2.1
-
 executors:
-  python-multiple:
+  python-313:
     docker:
-      - image: fkrull/multi-python
+      - image: cimg/python:3.13
+
+commands:
+  checkout-public-repo:
+    steps:
+      - run:
+          name: Checkout code
+          command: |
+            set -eu
+            git init .
+            git remote add origin https://github.com/kylecaston/checkenv.git
+            if [ -n "${CIRCLE_TAG:-}" ]; then
+              git fetch --depth=1 origin "refs/tags/${CIRCLE_TAG}"
+            else
+              git fetch --depth=1 origin "refs/heads/${CIRCLE_BRANCH}"
+            fi
+            git checkout --detach FETCH_HEAD
 
 jobs:
   build-and-test:
-    executor: python-multiple
+    executor: python-313
     steps:
-      - checkout
-      #- python/load-cache
+      - checkout-public-repo
       - run:
           name: Install dependencies
-          command: pip3 install -r requirements.txt
-      #- python/save-cache
+          command: |
+            python -m pip install --upgrade pip setuptools wheel
+            python -m pip install -r requirements.txt pytest-cov
       - run:
           name: Run tests and coverage
-          command: tox
+          command: python -m pytest --cov=checkenv --cov-report=term-missing -vv
       - run:
           name: Update coverage
-          command: COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN coveralls
+          command: coveralls
+
+  publish-to-pypi:
+    executor: python-313
+    environment:
+      TWINE_USERNAME: __token__
+      TWINE_NON_INTERACTIVE: "1"
+    steps:
+      - checkout-public-repo
+      - run:
+          name: Install packaging tools
+          command: python -m pip install --upgrade pip build twine
+      - run:
+          name: Build distributions
+          command: python -m build
+      - run:
+          name: Validate distributions
+          command: python -m twine check dist/*
+      - run:
+          name: Publish distributions to PyPI
+          command: python -m twine upload dist/*
+      - store_artifacts:
+          path: dist
 
 workflows:
   main:
     jobs:
       - build-and-test:
           context: checkenv
+          filters:
+            tags:
+              only: /.*/
+      - publish-to-pypi:
+          context: checkenv
+          requires:
+            - build-and-test
+          filters:
+            tags:
+              only: /^v[0-9]+(\.[0-9]+){2}.*$/
+            branches:
+              ignore: /.*/
