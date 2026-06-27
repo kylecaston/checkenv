@@ -1,11 +1,16 @@
 # checkenv
 
 [![PyPI](https://img.shields.io/pypi/v/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
-[![Python versions](https://img.shields.io/pypi/pyversions/checkenv)](https://img.shields.io/pypi/pyversions/checkenv)
-[![CircleCI](https://circleci.com/gh/kylecaston/checkenv.svg?style=shield)](https://circleci.com/gh/kylecaston/checkenv)
+[![Python versions](https://img.shields.io/pypi/pyversions/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
+[![Wheel](https://img.shields.io/pypi/wheel/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
+[![CircleCI](https://img.shields.io/circleci/build/github/kylecaston/checkenv/master?style=flat-square&logo=circleci)](https://circleci.com/gh/kylecaston/checkenv)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/checkenv?style=flat-square)](https://pypistats.org/packages/checkenv)
 [![PyPI - License](https://img.shields.io/pypi/l/checkenv?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Coverage Status](https://coveralls.io/repos/github/kylecaston/checkenv/badge.svg?branch=master)](https://coveralls.io/github/kylecaston/checkenv?branch=master)
+[![Snyk security](https://snyk.io/test/github/kylecaston/checkenv/badge.svg)](https://snyk.io/test/github/kylecaston/checkenv)
+[![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-46a2f1?style=flat-square)](https://docs.astral.sh/ruff/)
+[![Typing: typed](https://img.shields.io/badge/typing-typed-2f80ed?style=flat-square)](https://typing.python.org/en/latest/spec/distributing.html)
+[![Maintenance](https://img.shields.io/badge/maintenance-active-brightgreen?style=flat-square)](https://github.com/kylecaston/checkenv)
 
 A modern best-practice is to [store your application's configuration in environmental variables](http://12factor.net/config).  This allows you to keep all config data outside of your repository, and store it in a standard, system-agnostic location.  Modern build/deploy/development tools make it easier to manage these variables per-host, but they're still often undocumented, and can lead to bugs when missing.
 
