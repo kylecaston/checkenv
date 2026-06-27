@@ -1,6 +1,1 @@
-jsonschema
-colorama
-pytest
-tox
-coveralls
-future
+-e .[dev]

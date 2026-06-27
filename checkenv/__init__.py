@@ -1,38 +1,33 @@
 """This module includes the logic for checkenv functionality."""
-# for python2.7 compatibility
-from __future__ import print_function
-from builtins import open
-from builtins import map
-from builtins import str
-from builtins import object
+import json
 import os
 import sys
-import json
+
 from checkenv.exceptions import CheckEnvException
+from colorama import Back, Fore, Style, init
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from colorama import init, Fore, Back, Style
+
 init()
 
 
-class EnvCheckResultRow(object):
+_DEFAULT_NOT_PROVIDED = object()
+
+
+class EnvCheckResultRow:
     """Utilty class to keep track of environment variable specs.
 
     It was primarily written to make it easier to print color text to console."""
-    _env_name = None
-    _default = None
-    _description = None
 
     def __init__(self, env_name, default=None, description=None):
         self._env_name = env_name
         self._default = default
         self._description = description
 
-
     def __repr__(self):
         # {name} {(default=...)} {description}
         row_string = self._env_name
-        if self._default:
+        if self._default is not None:
             row_string += ' (default={})'.format(self._default)
         if self._description:
             row_string += ' {}'.format(self._description)
@@ -54,7 +49,7 @@ class EnvCheckResultRow(object):
         return self._description
 
 
-class EnvCheckResults(object):
+class EnvCheckResults:
     """Utility class to encapsulate the objects and properties necessary for
     sharing and customizing the results of the checkenv process.
     """
@@ -69,15 +64,10 @@ class EnvCheckResults(object):
     MISSING = "missing"
     OPTIONAL = "optional"
 
-    _env_var_names = []
-    _spec = {}
-    _section = None
-
     def __init__(self, env_var_names, spec, section):
         self._env_var_names = env_var_names
         self._spec = spec
         self._section = section
-
 
     def __repr__(self):
         result = self.header
@@ -85,11 +75,9 @@ class EnvCheckResults(object):
             result += '\n' + str(row)
         return result
 
-
     def _plural_string(self, length):
         """A cheap way to pluralize the header text"""
         return ' is' if length == 1 else 's are'
-
 
     @property
     def header(self):
@@ -119,7 +107,6 @@ class EnvCheckResults(object):
         """
         return list(map(self._single_row, self._env_var_names))
 
-
     def print_console_color(self):
         """Prints the results of the checkenv process to the console using
         ANSI colors.
@@ -139,7 +126,7 @@ class EnvCheckResults(object):
             print(self._COLORS_ENV_NAME_TEXT, end='')
             print(row.name, end='')
             print(self._COLORS_RESET, end='')
-            if row.default:
+            if row.default is not None:
                 print(self._COLORS_DEFAULT_TEXT, end='')
                 print(' (default={})'.format(row.default), end='')
                 print(self._COLORS_RESET, end='')
@@ -149,19 +136,11 @@ class EnvCheckResults(object):
 
 
 
-class CheckEnv(object):
+class CheckEnv:
     """Class to manage the steps to load and check an environment to ensure
     that environment variables are set appropriately.
     """
 
-    # filename for the JSON file that specified env vars
-    _env_filename = None
-    # the env variable spec to test against
-    _spec = None
-    # list of env variable names that are missing and required
-    _missing = []
-    # list of env variable names that are missing but optional
-    _optional = []
     # the acceptable schema for env_filename
     _schema = {
         "type": "object",
@@ -184,7 +163,8 @@ class CheckEnv(object):
                                     {"type": "boolean"}
                                 ]
                             }
-                        }
+                        },
+                        "additionalProperties": False
                     },
                     {
                         "type": "boolean"
@@ -198,7 +178,9 @@ class CheckEnv(object):
 
     def __init__(self, env_filename='env.json'):
         self._env_filename = env_filename
-
+        self._spec = None
+        self._missing = []
+        self._optional = []
 
     def _reset(self):
         """Resets missing and optional lists"""
@@ -218,8 +200,7 @@ class CheckEnv(object):
             validate(jdata, self._schema)
             self._spec = jdata
 
-
-    def _check_and_set(self, name, required, default=None):
+    def _check_and_set(self, name, required, default=_DEFAULT_NOT_PROVIDED):
         """Applies the spec against a single environment variable.
 
         If an environment variable is not set and a default value is provided,
@@ -228,8 +209,8 @@ class CheckEnv(object):
         """
         # see if name is defined
         value = os.getenv(name, None)
-        if not value:
-            if default: # if we have a default value, set as a str and continue
+        if value is None:
+            if default is not _DEFAULT_NOT_PROVIDED:
                 os.environ[name] = str(default)
                 self._optional.append(name)
             else:   # see if this was mandatory or optional
@@ -254,7 +235,8 @@ class CheckEnv(object):
             if isinstance(value, bool):
                 self._check_and_set(key, value)
             else:
-                self._check_and_set(key, value.get('required', True), value.get('default', None))
+                default = value.get('default', _DEFAULT_NOT_PROVIDED)
+                self._check_and_set(key, value.get('required', True), default)
 
 
     @property
@@ -264,9 +246,7 @@ class CheckEnv(object):
         :return: Returns True if any mandatory environment variables are not set; False otherwise
         :rtype: bool
         """
-        if len(self._missing) > 0:
-            return True
-        return False
+        return len(self._missing) > 0
 
 
     @property
@@ -296,9 +276,8 @@ class CheckEnv(object):
 
 def _handle_exit(raise_exc=False, exc=None):
     if not raise_exc:
-        sys.exit()
-    else:
-        raise exc
+        sys.exit(1)
+    raise exc
 
 def _handle_print(no_out=False, msg=""):
     if not no_out:

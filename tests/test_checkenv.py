@@ -1,8 +1,10 @@
+import json
 import os
+
 import pytest
-from jsonschema.exceptions import ValidationError
 from checkenv import check, CheckEnv, EnvCheckResults, EnvCheckResultRow
 from checkenv.exceptions import CheckEnvException
+from jsonschema.exceptions import ValidationError
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -19,30 +21,35 @@ def init_env(monkeypatch):
     monkeypatch.delenv("VALUE_3", raising=False)
     monkeypatch.delenv("VALUE_4", raising=False)
     monkeypatch.delenv("VALUE_5", raising=False)
+    monkeypatch.delenv("VALUE_EMPTY", raising=False)
+    monkeypatch.delenv("VALUE_FALSE_DEFAULT", raising=False)
+    monkeypatch.delenv("VALUE_ZERO_DEFAULT", raising=False)
 
 def test_main_import_different_filename_doesnt_exist_sys_exit(init_env):
     with pytest.raises(SystemExit) as exc:
         check()
-    assert exc.type == SystemExit
+    assert exc.type is SystemExit
+    assert exc.value.code == 1
 
 def test_main_import_different_filename_doesnt_exist_raise_error(init_env):
-    with pytest.raises(IOError) as exc:
+    with pytest.raises(IOError):
         check(raise_exception=True)
 
 def test_main_import_invalid_json_sys_exit(init_env):
     with pytest.raises(SystemExit) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/invalid.json'))
-    assert exc.type == SystemExit
+    assert exc.type is SystemExit
+    assert exc.value.code == 1
 
 def test_main_import_invalid_json_raise_exception(init_env):
     with pytest.raises(ValidationError) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/invalid.json'), raise_exception=True)
-    assert exc.type == ValidationError
+    assert exc.type is ValidationError
 
 def test_main_import_invalid_json_raise_exception_no_output(init_env, capsys):
     with pytest.raises(ValidationError) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/invalid.json'), raise_exception=True, no_output=True)
-    assert exc.type == ValidationError
+    assert exc.type is ValidationError
     captured = capsys.readouterr()
     assert captured.out == ''
     assert captured.err == ''
@@ -50,7 +57,7 @@ def test_main_import_invalid_json_raise_exception_no_output(init_env, capsys):
 def test_main_import_invalid_json_raise_exception_with_output(init_env, capsys):
     with pytest.raises(ValidationError) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/invalid.json'), raise_exception=True, no_output=False)
-    assert exc.type == ValidationError
+    assert exc.type is ValidationError
     captured = capsys.readouterr()
     assert captured.out != ''   # should be some error message output
     assert captured.err == ''   # nothing gets sent to stderr
@@ -61,12 +68,13 @@ def test_main_import_valid_json_checkenv_succeeds_and_continues(init_env):
 def test_main_import_valid_json_checkenv_fails_and_exits(init_env):
     with pytest.raises(SystemExit) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/valid1.json'))
-    assert exc.type == SystemExit
+    assert exc.type is SystemExit
+    assert exc.value.code == 1
 
 def test_main_import_raise_exception_on_error(init_env):
     with pytest.raises(CheckEnvException) as exc:
         check(filename=os.path.join(dir_path, 'fixtures/valid2.json'), raise_exception=True)
-    assert exc.type == CheckEnvException
+    assert exc.type is CheckEnvException
 
 def test_main_import_raise_exception_on_error_details(init_env):
     try:
@@ -109,7 +117,7 @@ def test_all_env_names_set_valid1(init_env, monkeypatch):
     # nothing should be in mandatory or optional sets
     assert [] == instance.missing
     assert [] == instance.optional
-    assert instance.check_failed == False
+    assert not instance.check_failed
 
 def test_mandatory_value_not_set_valid2(init_env, monkeypatch):
     instance = CheckEnv(env_filename=os.path.join(dir_path, 'fixtures/valid2.json'))
@@ -128,7 +136,49 @@ def test_ensure_check_failed(init_env):
     instance = CheckEnv(env_filename=os.path.join(dir_path, 'fixtures/valid2.json'))
     instance.load_spec_file()
     instance.apply_spec()
-    assert instance.check_failed == True
+    assert instance.check_failed
+
+def test_empty_environment_variable_counts_as_set(init_env, monkeypatch, tmp_path):
+    env_file = tmp_path / 'env.json'
+    env_file.write_text(json.dumps({"VALUE_EMPTY": True}))
+    monkeypatch.setenv("VALUE_EMPTY", "")
+
+    instance = CheckEnv(env_filename=str(env_file))
+    instance.load_spec_file()
+    instance.apply_spec()
+
+    assert [] == instance.missing
+    assert [] == instance.optional
+
+def test_false_default_value_is_applied(init_env, tmp_path):
+    env_file = tmp_path / 'env.json'
+    env_file.write_text(json.dumps({"VALUE_FALSE_DEFAULT": {"default": False}}))
+
+    instance = CheckEnv(env_filename=str(env_file))
+    instance.load_spec_file()
+    instance.apply_spec()
+
+    assert os.getenv("VALUE_FALSE_DEFAULT") == "False"
+    assert instance.optional == ["VALUE_FALSE_DEFAULT"]
+
+def test_zero_default_value_is_applied(init_env, tmp_path):
+    env_file = tmp_path / 'env.json'
+    env_file.write_text(json.dumps({"VALUE_ZERO_DEFAULT": {"default": 0}}))
+
+    instance = CheckEnv(env_filename=str(env_file))
+    instance.load_spec_file()
+    instance.apply_spec()
+
+    assert os.getenv("VALUE_ZERO_DEFAULT") == "0"
+    assert instance.optional == ["VALUE_ZERO_DEFAULT"]
+
+def test_unknown_object_property_is_invalid(init_env, tmp_path):
+    env_file = tmp_path / 'env.json'
+    env_file.write_text(json.dumps({"VALUE_1": {"requried": False}}))
+
+    instance = CheckEnv(env_filename=str(env_file))
+    with pytest.raises(ValidationError):
+        instance.load_spec_file()
 
 def test_plural_string_length_zero():
     default = EnvCheckResults(None, None, None)

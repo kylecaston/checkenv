@@ -1,13 +1,12 @@
-from future import standard_library
-standard_library.install_aliases()
-
 class CheckEnvException(Exception):
-    _missing = []
-    _optional = []
-
     def __init__(self, missing, optional):
         self._missing = missing
         self._optional = optional
+        super().__init__(
+            "Missing required environment variables: {}".format(
+                ", ".join(missing)
+            )
+        )
 
     @property
     def missing(self):

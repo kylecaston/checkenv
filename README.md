@@ -14,10 +14,12 @@ This module lets you define all the environmental variables your application rel
 Inspired from the popular npm package, [checkenv](https://www.npmjs.com/package/checkenv).
 
 ## Usage
-First, define a JSON file called `env.json` in your project root (see below for the specific structure). Next, install the library using `pip` connected to the [PyPi](https://pypi.org/) index:
+First, define a JSON file called `env.json` in your project root (see below for the specific structure). Next, install the library using `pip` connected to the [PyPI](https://pypi.org/) index:
 ```bash
 pip install checkenv
 ```
+
+`checkenv` 2.x supports Python 3.11 and newer. If you need Python 2.7 or older Python 3 releases, pin to `checkenv<2`.
 
 Then, add the following line to the top of your project's entry file:
 
@@ -76,6 +78,15 @@ Your JSON file should define the environmental variables as keys, and either a b
 * `default` - Defines the default value to use if variable is unset. Implicitly sets `required` to `false` regardless of any specified value.
 
 ## Change Log
+### 2.0.0
+* Dropped support for Python 2.7 and end-of-life Python 3 versions; `checkenv` now requires Python 3.11+
+* Moved packaging metadata to `pyproject.toml`
+* Removed the `future` compatibility dependency
+* Fixed failed checks to exit with a nonzero status code
+* Fixed default handling for falsy values such as `0` and `false`
+* Treat explicitly empty environment variables as set
+* Reject unknown object properties in `env.json` entries
+
 ### 1.2.0
 * Added ability for `check()` to throw exceptions instead of killing the running process with `raise_exception=True`
 * Added ability to silence all output to `stdout` with `no_output=True`
