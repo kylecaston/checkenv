@@ -42,9 +42,13 @@ dev = [
     "coveralls>=4.0",
     "pytest>=9.0",
     "pytest-cov>=7.0",
+    # Keep transitive dev dependencies above Snyk-reported vulnerable ranges.
+    "requests>=2.32.4",
     "ruff>=0.8",
     "tox>=4.0",
     "twine>=6.0",
+    "urllib3>=2.6.3",
+    "zipp>=3.19.1",
 ]
 
 [tool.ruff]

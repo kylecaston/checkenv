@@ -85,6 +85,7 @@ Your JSON file should define the environmental variables as keys, and either a b
 * Added inline type metadata for type-aware editors and downstream users
 * Added Ruff linting/formatting gates, package build validation, and a supported Python version matrix in CircleCI
 * Added Dependabot configuration and security reporting policy
+* Constrained Snyk-reported vulnerable transitive development dependencies above fixed versions
 * Fixed failed checks to exit with a nonzero status code
 * Fixed default handling for falsy values such as `0` and `false`
 * Treat explicitly empty environment variables as set

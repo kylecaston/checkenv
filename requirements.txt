@@ -1,1 +1,13 @@
--e .[dev]
+# Developer dependencies, mirrored from pyproject.toml's dev extra so tools like Snyk can scan
+# concrete package requirements while local installs still use the editable package.
+-e .
+build>=1.3
+coveralls>=4.0
+pytest>=9.0
+pytest-cov>=7.0
+requests>=2.32.4
+ruff>=0.8
+tox>=4.0
+twine>=6.0
+urllib3>=2.6.3
+zipp>=3.19.1
