@@ -3,10 +3,10 @@
 [![PyPI](https://img.shields.io/pypi/v/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
 [![Python versions](https://img.shields.io/pypi/pyversions/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
 [![Wheel](https://img.shields.io/pypi/wheel/checkenv?style=flat-square)](https://pypi.org/project/checkenv)
-[![CircleCI](https://img.shields.io/circleci/build/github/kylecaston/checkenv/master?style=flat-square&logo=circleci)](https://circleci.com/gh/kylecaston/checkenv)
+[![CircleCI](https://img.shields.io/circleci/build/github/kylecaston/checkenv/main?style=flat-square&logo=circleci)](https://circleci.com/gh/kylecaston/checkenv)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/checkenv?style=flat-square)](https://pypistats.org/packages/checkenv)
 [![PyPI - License](https://img.shields.io/pypi/l/checkenv?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Coverage Status](https://coveralls.io/repos/github/kylecaston/checkenv/badge.svg?branch=master)](https://coveralls.io/github/kylecaston/checkenv?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/kylecaston/checkenv/badge.svg?branch=main)](https://coveralls.io/github/kylecaston/checkenv?branch=main)
 [![Snyk security](https://snyk.io/test/github/kylecaston/checkenv/badge.svg)](https://snyk.io/test/github/kylecaston/checkenv)
 [![Code style: Ruff](https://img.shields.io/badge/code%20style-ruff-46a2f1?style=flat-square)](https://docs.astral.sh/ruff/)
 [![Typing: typed](https://img.shields.io/badge/typing-typed-2f80ed?style=flat-square)](https://typing.python.org/en/latest/spec/distributing.html)
@@ -42,7 +42,7 @@ check()
 
 By default, `checkenv` will print a pretty error message and call `sys.exit()` if any required variables are missing. It will also print an error message if optional variables are missing, but will not exit the process.
 
-![Screenshot](https://raw.githubusercontent.com/kylecaston/checkenv/master/docs/usage.png)
+![Screenshot](https://raw.githubusercontent.com/kylecaston/checkenv/main/docs/usage.png)
 
 You can specify a filename other than `env.json` by setting the optional parameter `filename`.  The library will attempt to load this file from the root path of your project.  You can also specify an absolute file path.
 
