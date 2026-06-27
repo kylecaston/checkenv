@@ -43,6 +43,7 @@ dev = [
     "pytest>=9.0",
     "pytest-cov>=7.0",
     # Keep transitive dev dependencies above Snyk-reported vulnerable ranges.
+    "filelock>=3.20.1",
     "requests>=2.32.4",
     "ruff>=0.8",
     "tox>=4.0",
