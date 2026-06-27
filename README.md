@@ -21,7 +21,7 @@ Inspired from the popular npm package, [checkenv](https://www.npmjs.com/package/
 ## Project Status
 `checkenv` is actively maintained again. Version 2.0.0 is a modern maintenance release that keeps the library intentionally small while refreshing the project around supported Python versions, current packaging standards, CI, and dependency security hygiene.
 
-The current maintained line is `checkenv` 2.x, which supports Python 3.11 and newer and is tested in CircleCI across Python 3.11, 3.12, and 3.13. Legacy `checkenv` 1.x releases remain available on PyPI for projects that still need Python 2.7 or other end-of-life Python versions; pin `checkenv<2` if you are in that situation.
+The current maintained line is `checkenv` 2.x, which supports Python 3.11 and newer and is tested in CircleCI across Python 3.11, 3.12, 3.13, and 3.14. Legacy `checkenv` 1.x releases remain available on PyPI for projects that still need Python 2.7 or other end-of-life Python versions; pin `checkenv<2` if you are in that situation.
 
 Maintenance now includes Ruff linting and formatting checks, package build validation, Twine validation before publish, Snyk dependency scanning, Dependabot updates, and automated PyPI publishing from tagged CircleCI builds.
 
