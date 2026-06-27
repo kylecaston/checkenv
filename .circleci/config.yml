@@ -5,7 +5,6 @@ executors:
     parameters:
       version:
         type: string
-        default: "3.13"
     docker:
       - image: cimg/python:<< parameters.version >>
 
@@ -28,12 +27,11 @@ commands:
 jobs:
   build-and-test:
     parameters:
-      python-version:
+      version:
         type: string
-        default: "3.13"
     executor:
       name: python
-      version: << parameters.python-version >>
+      version: << parameters.version >>
     steps:
       - checkout-public-repo
       - run:
@@ -59,18 +57,21 @@ jobs:
       - run:
           name: Update coverage
           command: |
-            if [ "<< parameters.python-version >>" = "3.13" ]; then
+            if [ "<< parameters.version >>" = "3.13" ]; then
               coveralls
             else
-              echo "Skipping Coveralls upload for Python << parameters.python-version >>"
+              echo "Skipping Coveralls upload for Python << parameters.version >>"
             fi
       - store_artifacts:
           path: dist
 
   publish-to-pypi:
+    parameters:
+      version:
+        type: string
     executor:
       name: python
-      version: "3.13"
+      version: << parameters.version >>
     environment:
       TWINE_USERNAME: __token__
       TWINE_NON_INTERACTIVE: "1"
@@ -98,12 +99,13 @@ workflows:
           context: checkenv
           matrix:
             parameters:
-              python-version: ["3.11", "3.12", "3.13", "3.14"]
+              version: ["3.11", "3.12", "3.13", "3.14"]
           filters:
             tags:
               only: /.*/
       - publish-to-pypi:
           context: checkenv
+          version: "3.13"
           requires:
             - build-and-test-3.11
             - build-and-test-3.12
