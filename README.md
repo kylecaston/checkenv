@@ -13,13 +13,20 @@ This module lets you define all the environmental variables your application rel
 
 Inspired from the popular npm package, [checkenv](https://www.npmjs.com/package/checkenv).
 
+## Project Status
+`checkenv` is actively maintained again. Version 2.0.0 is a modern maintenance release that keeps the library intentionally small while refreshing the project around supported Python versions, current packaging standards, CI, and dependency security hygiene.
+
+The current maintained line is `checkenv` 2.x, which supports Python 3.11 and newer and is tested in CircleCI across Python 3.11, 3.12, and 3.13. Legacy `checkenv` 1.x releases remain available on PyPI for projects that still need Python 2.7 or other end-of-life Python versions; pin `checkenv<2` if you are in that situation.
+
+Maintenance now includes Ruff linting and formatting checks, package build validation, Twine validation before publish, Snyk dependency scanning, Dependabot updates, and automated PyPI publishing from tagged CircleCI builds.
+
 ## Usage
 First, define a JSON file called `env.json` in your project root (see below for the specific structure). Next, install the library using `pip` connected to the [PyPI](https://pypi.org/) index:
 ```bash
 pip install checkenv
 ```
 
-`checkenv` 2.x supports Python 3.11 and newer. If you need Python 2.7 or older Python 3 releases, pin to `checkenv<2`.
+For the maintained 2.x line, use Python 3.11 or newer. If you need Python 2.7 or older Python 3 releases, pin to `checkenv<2`.
 
 Then, add the following line to the top of your project's entry file:
 
@@ -78,18 +85,26 @@ Your JSON file should define the environmental variables as keys, and either a b
 * `default` - Defines the default value to use if variable is unset. Implicitly sets `required` to `false` regardless of any specified value.
 
 ## Change Log
-### 2.0.0
+### 2.0.0 - Modern Python Maintenance Release
+`checkenv` is back under active maintenance. This release keeps the public API small and familiar, but refreshes the project for the current Python ecosystem and tightens a few behaviors that were surprising in older releases.
+
+Breaking changes:
 * Dropped support for Python 2.7 and end-of-life Python 3 versions; `checkenv` now requires Python 3.11+
-* Moved packaging metadata to `pyproject.toml`
 * Removed the `future` compatibility dependency
+* Failed checks now exit with status code `1` instead of a successful exit
+* Unknown object properties in `env.json` entries are now rejected
+
+Maintenance and security:
+* Moved packaging metadata to `pyproject.toml`
 * Added inline type metadata for type-aware editors and downstream users
 * Added Ruff linting/formatting gates, package build validation, and a supported Python version matrix in CircleCI
 * Added Dependabot configuration and security reporting policy
 * Constrained Snyk-reported vulnerable transitive development dependencies above fixed versions
-* Fixed failed checks to exit with a nonzero status code
+* Added automated PyPI publishing from tagged CircleCI builds
+
+Bug fixes:
 * Fixed default handling for falsy values such as `0` and `false`
 * Treat explicitly empty environment variables as set
-* Reject unknown object properties in `env.json` entries
 
 ### 1.2.0
 * Added ability for `check()` to throw exceptions instead of killing the running process with `raise_exception=True`
